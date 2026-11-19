@@ -1,0 +1,19 @@
+{
+  "name": "atlas-wiki",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Atlas Wiki - 深色系自托管知识库",
+  "packageManager": "pnpm@9.12.3",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm --filter @atlas/shared build && pnpm --filter @atlas/api build && pnpm --filter @atlas/web build",
+    "start": "pnpm --filter @atlas/api start",
+    "db:push": "pnpm --filter @atlas/api db:push",
+    "db:seed": "pnpm --filter @atlas/api db:seed",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3"
+  }
+}

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" width="800" height="360" role="img" aria-label="迁徙星图方位示意">
+  <rect width="800" height="360" fill="#0D0E10"/>
+  <g stroke="#23262B" stroke-width="1">
+    <circle cx="400" cy="180" r="130" fill="none"/>
+    <circle cx="400" cy="180" r="86" fill="none"/>
+    <line x1="270" y1="180" x2="530" y2="180"/>
+    <line x1="400" y1="50" x2="400" y2="310"/>
+  </g>
+  <g fill="#C4C8CE">
+    <circle cx="318" cy="92" r="2.6"/>
+    <circle cx="470" cy="112" r="2"/>
+    <circle cx="512" cy="196" r="2.4"/>
+    <circle cx="440" cy="262" r="2"/>
+    <circle cx="300" cy="236" r="2.2"/>
+    <circle cx="360" cy="160" r="1.8"/>
+  </g>
+  <g stroke="#5A606A" stroke-width="1" fill="none">
+    <polyline points="318,92 360,160 470,112"/>
+    <polyline points="300,236 360,160 440,262"/>
+  </g>
+  <path d="M400 180 L560 244" stroke="#8FA3B3" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <path d="M552 240 L562 245 L556 252" fill="none" stroke="#8FA3B3" stroke-width="1.5"/>
+  <g fill="#5A606A" font-family="Inter, sans-serif" font-size="11">
+    <text x="52" y="42">秋季峰值方位角 · 约 143°</text>
+    <text x="560" y="272">东南</text>
+    <text x="52" y="326">观测点 41°N · 217 个缺测夜以空白表示</text>
+  </g>
+  <circle cx="400" cy="180" r="3" fill="#8C7A4F"/>
+</svg>

@@ -1,0 +1,62 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: atlas
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-atlas_dev_pw}
+      POSTGRES_DB: atlas
+    volumes:
+      - atlas-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U atlas -d atlas"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:8080}
+      DATABASE_PROVIDER: postgresql
+      DATABASE_URL: postgresql://atlas:${POSTGRES_PASSWORD:-atlas_dev_pw}@db:5432/atlas?schema=public
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-atlas_access_secret_change_me_before_public_use}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-atlas_refresh_secret_change_me_before_public_use}
+      CSRF_SECRET: ${CSRF_SECRET:-atlas_csrf_secret_change_me_before_public_use}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      COOKIE_DOMAIN: ${COOKIE_DOMAIN:-}
+      UPLOAD_DIR: /app/uploads
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-Admin@12345}
+      SEED_EDITOR_PASSWORD: ${SEED_EDITOR_PASSWORD:-Editor@12345}
+      SEED_USER_PASSWORD: ${SEED_USER_PASSWORD:-User@12345}
+    volumes:
+      - atlas-uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:4000/api/site/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  atlas-db:
+  atlas-uploads:

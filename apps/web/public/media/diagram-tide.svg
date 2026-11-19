@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" width="800" height="360" role="img" aria-label="雾港潮位示意">
+  <rect width="800" height="360" fill="#0D0E10"/>
+  <g stroke="#23262B" stroke-width="1">
+    <line x1="60" y1="40" x2="740" y2="40"/>
+    <line x1="60" y1="110" x2="740" y2="110"/>
+    <line x1="60" y1="180" x2="740" y2="180"/>
+    <line x1="60" y1="250" x2="740" y2="250"/>
+    <line x1="60" y1="320" x2="740" y2="320"/>
+    <line x1="60" y1="40" x2="60" y2="320"/>
+    <line x1="740" y1="40" x2="740" y2="320"/>
+  </g>
+  <path d="M60 250 C 140 190, 180 300, 260 220 S 400 120, 470 190 S 620 280, 740 170" fill="none" stroke="#8FA3B3" stroke-width="2"/>
+  <path d="M60 250 C 140 190, 180 300, 260 220 S 400 120, 470 190 S 620 280, 740 170 L740 320 L60 320 Z" fill="#7A8B99" opacity="0.1"/>
+  <g fill="#5A7A62">
+    <rect x="150" y="238" width="10" height="82"/>
+    <rect x="250" y="214" width="10" height="106"/>
+    <rect x="350" y="182" width="10" height="138"/>
+    <rect x="450" y="196" width="10" height="124"/>
+    <rect x="550" y="236" width="10" height="84"/>
+  </g>
+  <g fill="#5A606A" font-family="Inter, sans-serif" font-size="11">
+    <text x="62" y="30">潮位 / cm</text>
+    <text x="62" y="338">00:00</text>
+    <text x="350" y="338">12:00</text>
+    <text x="700" y="338">24:00</text>
+    <text x="640" y="60">低压日 · 1996-11-03</text>
+  </g>
+</svg>

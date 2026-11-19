@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String          @id @default(uuid())
+  username           String          @unique
+  email              String          @unique
+  passwordHash       String
+  role               String          @default("user")
+  status             String          @default("active")
+  avatarSeed         String
+  bio                String          @default("")
+  mustChangePassword Boolean         @default(false)
+  createdAt          DateTime        @default(now())
+  lastLoginAt        DateTime?
+  lastLoginIp        String?
+  failedLoginCount   Int             @default(0)
+  lockedUntil        DateTime?
+  pages              Page[]          @relation("PageAuthor")
+  pendingPages       Page[]          @relation("PagePendingAuthor")
+  revisions          PageRevision[]
+  comments           Comment[]
+  media              Media[]
+  auditLogs          AuditLog[]
+  refreshTokens      RefreshToken[]
+
+  @@index([role])
+  @@index([status])
+}
+
+model Page {
+  id                 String         @id @default(uuid())
+  slug               String         @unique
+  title              String
+  content            String
+  summary            String         @default("")
+  categoryId         String?
+  authorId           String
+  status             String         @default("draft")
+  isProtected        Boolean        @default(false)
+  viewCount          Int            @default(0)
+  pendingTitle       String?
+  pendingContent     String?
+  pendingSummary     String?
+  pendingEditSummary String?
+  pendingAuthorId    String?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  category           Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  author             User           @relation("PageAuthor", fields: [authorId], references: [id])
+  pendingAuthor      User?          @relation("PagePendingAuthor", fields: [pendingAuthorId], references: [id], onDelete: SetNull)
+  revisions          PageRevision[]
+  comments           Comment[]
+  tags               PageTag[]
+
+  @@index([status])
+  @@index([categoryId])
+  @@index([authorId])
+  @@index([updatedAt])
+}
+
+model PageRevision {
+  id          String   @id @default(uuid())
+  pageId      String
+  content     String
+  title       String
+  editSummary String   @default("")
+  editorId    String
+  version     Int
+  createdAt   DateTime @default(now())
+  page        Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  editor      User     @relation(fields: [editorId], references: [id])
+
+  @@unique([pageId, version])
+  @@index([pageId])
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String
+  slug      String     @unique
+  parentId  String?
+  sortOrder Int        @default(0)
+  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Category[] @relation("CategoryTree")
+  pages     Page[]
+
+  @@index([parentId])
+}
+
+model Tag {
+  id    String    @id @default(uuid())
+  name  String    @unique
+  slug  String    @unique
+  pages PageTag[]
+}
+
+model PageTag {
+  pageId String
+  tagId  String
+  page   Page   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([pageId, tagId])
+}
+
+model Comment {
+  id        String    @id @default(uuid())
+  pageId    String
+  userId    String
+  parentId  String?
+  content   String
+  status    String    @default("visible")
+  createdAt DateTime  @default(now())
+  page      Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id])
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+
+  @@index([pageId])
+  @@index([parentId])
+}
+
+model Media {
+  id         String   @id @default(uuid())
+  filename   String
+  path       String
+  mime       String
+  size       Int
+  uploaderId String
+  createdAt  DateTime @default(now())
+  uploader   User     @relation(fields: [uploaderId], references: [id])
+
+  @@index([uploaderId])
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String?
+  action     String
+  targetType String?
+  targetId   String?
+  detail     String?
+  ip         String?
+  createdAt  DateTime @default(now())
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([action])
+  @@index([createdAt])
+  @@index([actorId])
+}
+
+model Captcha {
+  id        String   @id
+  answer    String
+  ip        String
+  expiresAt DateTime
+  consumed  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([expiresAt])
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  userAgent String?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Setting {
+  key   String @id
+  value String
+}
